@@ -1,74 +1,92 @@
 /*
-Cap Bonus
-    Copyright (C) 2015 Vladimir "allejo" Jimenez
-
-    This program is free software: you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation, either version 3 of the License, or
-    (at your option) any later version.
-
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU General Public License for more details.
-
-    You should have received a copy of the GNU General Public License
-    along with this program.  If not, see <http://www.gnu.org/licenses/>.
-*/
+ * Copyright (C) 2015-2018 Vladimir "allejo" Jimenez
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+ * THE SOFTWARE.
+ */
 
 #include "bzfsAPI.h"
-#include "plugin_utils.h"
+
+const int DEBUG_VERBOSITY = 4;
+
+// Define plugin name
+const std::string PLUGIN_NAME = "Capture Bonus";
+
+// Define plugin version numbering
+const int MAJOR = 1;
+const int MINOR = 0;
+const int REV = 0;
+const int BUILD = 5;
 
 class CaptureBonus : public bz_Plugin
 {
 public:
-    virtual const char* Name () {return "Capture Bonus";}
+    virtual const char* Name ();
     virtual void Init (const char* config);
     virtual void Event (bz_EventData *eventData);
     virtual void Cleanup (void);
 
-    virtual int calculatePointBonus (void);
+private:
+    int calculatePointBonus (void);
 };
 
 BZ_PLUGIN(CaptureBonus)
+
+const char* CaptureBonus::Name(void)
+{
+    static std::string pluginName;
+
+    if (pluginName.empty())
+    {
+        pluginName = bz_format("%s %d.%d.%d (%d)", PLUGIN_NAME.c_str(), MAJOR, MINOR, REV, BUILD);
+    }
+
+    return pluginName.c_str();
+}
 
 void CaptureBonus::Init (const char* commandLine)
 {
     Register(bz_eCaptureEvent);
 
-    if (!bz_BZDBItemExists("_captureBonus"))
-    {
-        bz_setBZDBDouble("_captureBonus", 10);
-    }
+    bz_registerCustomBZDBInt("_captureBonus", 10);
 }
 
 void CaptureBonus::Cleanup (void)
 {
     Flush();
+
+    bz_removeCustomBZDBVariable("_captureBonus");
 }
 
 void CaptureBonus::Event (bz_EventData *eventData)
 {
     switch (eventData->eventType)
     {
-        case bz_eCaptureEvent: // This event is called each time a team's flag has been captured
+        case bz_eCaptureEvent:
         {
             bz_CTFCaptureEventData_V1* captureData = (bz_CTFCaptureEventData_V1*)eventData;
-
-            // Data
-            // ---
-            //    (bz_eTeamType)  teamCapped    - The team whose flag was captured.
-            //    (bz_eTeamType)  teamCapping   - The team who did the capturing.
-            //    (int)           playerCapping - The player who captured the flag.
-            //    (float[3])      pos           - The world position(X,Y,Z) where the flag has been captured
-            //    (float)         rot           - The rotational orientation of the capturing player
-            //    (double)        eventTime     - This value is the local server time of the event.
 
             bz_incrementPlayerWins(captureData->playerCapping, calculatePointBonus());
         }
         break;
 
-        default: break;
+        default:
+            break;
     }
 }
 
