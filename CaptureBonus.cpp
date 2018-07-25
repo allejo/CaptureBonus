@@ -22,24 +22,22 @@
 
 #include "bzfsAPI.h"
 
-const int DEBUG_VERBOSITY = 4;
-
 // Define plugin name
 const std::string PLUGIN_NAME = "Capture Bonus";
 
 // Define plugin version numbering
 const int MAJOR = 1;
 const int MINOR = 0;
-const int REV = 0;
-const int BUILD = 5;
+const int REV = 1;
+const int BUILD = 11;
 
 class CaptureBonus : public bz_Plugin
 {
 public:
-    virtual const char* Name ();
-    virtual void Init (const char* config);
-    virtual void Event (bz_EventData *eventData);
-    virtual void Cleanup (void);
+    virtual const char* Name();
+    virtual void Init(const char* config);
+    virtual void Event(bz_EventData *eventData);
+    virtual void Cleanup(void);
 
 private:
     bool penalizeSelfCapture();
@@ -60,21 +58,23 @@ const char* CaptureBonus::Name(void)
     return pluginName.c_str();
 }
 
-void CaptureBonus::Init (const char* commandLine)
+void CaptureBonus::Init(const char* commandLine)
 {
     Register(bz_eCaptureEvent);
 
     bz_registerCustomBZDBInt("_captureBonus", 10);
+    bz_registerCustomBZDBBool("_penalizeSelfCapture", true);
 }
 
-void CaptureBonus::Cleanup (void)
+void CaptureBonus::Cleanup(void)
 {
     Flush();
 
     bz_removeCustomBZDBVariable("_captureBonus");
+    bz_removeCustomBZDBVariable("_penalizeSelfCapture");
 }
 
-void CaptureBonus::Event (bz_EventData *eventData)
+void CaptureBonus::Event(bz_EventData *eventData)
 {
     switch (eventData->eventType)
     {
