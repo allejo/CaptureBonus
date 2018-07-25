@@ -1,44 +1,40 @@
-# CaptureBonus
+# Capture Bonus
 
-A BZFlag plugin that awards a bonus to players who capture the flag.
+[![GitHub release](https://img.shields.io/github/release/allejo/CaptureBonus.svg)](https://github.com/allejo/CaptureBonus/releases/latest)
+![Minimum BZFlag Version](https://img.shields.io/badge/BZFlag-v2.4.0+-blue.svg)
+[![License](https://img.shields.io/github/license/allejo/CaptureBonus.svg)](LICENSE.md)
 
-### Requirements
+A BZFlag plugin that awards a static bonus to players who capture the flag.
 
-- BZFlag 2.4.3+ (*latest version available on GitHub is recommended*)
+## Requirements
 
-### How to Compile
+- BZFlag 2.4.14+
 
-1. Check out the 2.4.x BZFlag source code from GitHub, if you do not already have it on your server. If you are still using SVN, it is recommended you switch to using Git because all future development of BZFlag will use Git.
+This plug-in follows [my standard instructions for compiling plug-ins](https://github.com/allejo/docs.allejo.io/wiki/BZFlag-Plug-in-Distribution).
 
-        git clone -b 2.4 https://github.com/BZFlag-Dev/bzflag.git
+## Usage
 
-2. Go into the newly checked out source code and then the plugins directory.
-        
-        cd bzflag/plugins
+### Loading the plug-in
 
-3. Run a git clone of this repository from within the plugins directory. This should have created a new `CaptureBonus` directory within the plugins directory.
+This plug-in does not require any special configuration at load time.
 
-        git clone https://github.com/allejo/CaptureBonus.git
+```
+-loadplugin CaptureBonus
 
-4. The latest BZFlag trunk will contain a script called 'addToBuild.sh' and it will allow you to add the plugin to the build system.
+```
 
-        sh addToBuild.sh CaptureBonus
+### Custom BZDB Variables
 
-5. Instruct the build system to generate a Makefile and then compile and install the plugin.
+These custom BZDB variables can be configured with `-set` in configuration files and may be changed at any time in-game by using the `/set` command.
 
-        cd ..; ./autogen.sh; ./configure; make; make install;
+```
+-set <name> <value>
+```
 
-## BZDB Variables
+| Name | Type | Default | Description |
+| ---- | ---- | ------- | ----------- |
+| `_captureBonus` | int | 10 | The number of extra points a player will be awarded on capturing a flag. |
 
-    _captureBonus
+## License
 
-_captureBonus
-
-- Default: *10*
-
-- Description: The number of extra points a player will be awarded on capturing a flag.
-
-
-### Using Custom BZDB Variables
-
-Because this plugin utilizes custom BZDB variables, using `-set _captureBonus 10` in a configuration file or in an options block will cause an error; instead, `-setforced` must be used to set the value of the custom variable: `-setforced _captureBonus 90`. These variables can be set and changed normally in-game with the `/set` command.
+[MIT](LICENSE.md)
