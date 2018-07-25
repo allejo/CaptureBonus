@@ -42,7 +42,8 @@ public:
     virtual void Cleanup (void);
 
 private:
-    int calculatePointBonus (void);
+    bool penalizeSelfCapture();
+    int calculatePointBonus();
 };
 
 BZ_PLUGIN(CaptureBonus)
@@ -81,7 +82,21 @@ void CaptureBonus::Event (bz_EventData *eventData)
         {
             bz_CTFCaptureEventData_V1* captureData = (bz_CTFCaptureEventData_V1*)eventData;
 
-            bz_incrementPlayerWins(captureData->playerCapping, calculatePointBonus());
+            int playerID = captureData->playerCapping;
+            int bonusPoints = calculatePointBonus();
+
+
+            // A self-cap happened but only deduct points if we're configured to do so
+            if (captureData->teamCapped == bz_getPlayerTeam(playerID) && penalizeSelfCapture())
+            {
+                bz_incrementPlayerLosses(playerID, bonusPoints);
+                bz_sendTextMessagef(BZ_SERVER, playerID, "You were deducted %d points for capturing your own flag!", bonusPoints);
+
+                return;
+            }
+
+            bz_incrementPlayerWins(playerID, bonusPoints);
+            bz_sendTextMessagef(BZ_SERVER, playerID, "You were awarded %d points for capturing the flag!", bonusPoints);
         }
         break;
 
@@ -90,7 +105,12 @@ void CaptureBonus::Event (bz_EventData *eventData)
     }
 }
 
-int CaptureBonus::calculatePointBonus (void)
+bool CaptureBonus::penalizeSelfCapture()
+{
+    return bz_getBZDBBool("_penalizeSelfCapture");
+}
+
+int CaptureBonus::calculatePointBonus()
 {
     return bz_getBZDBInt("_captureBonus");
 }

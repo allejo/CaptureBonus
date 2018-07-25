@@ -33,6 +33,7 @@ These custom BZDB variables can be configured with `-set` in configuration files
 | Name | Type | Default | Description |
 | ---- | ---- | ------- | ----------- |
 | `_captureBonus` | int | 10 | The number of extra points a player will be awarded on capturing a flag. |
+| `_penalizeSelfCapture` | bool | true | When set to true, deduct the extra points when a player self-caps. |
 
 ## License
 
