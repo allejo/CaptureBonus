@@ -20,7 +20,6 @@ This plug-in does not require any special configuration at load time.
 
 ```
 -loadplugin CaptureBonus
-
 ```
 
 ### Custom BZDB Variables
