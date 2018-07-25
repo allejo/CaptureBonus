@@ -1,7 +1,7 @@
 # Capture Bonus
 
 [![GitHub release](https://img.shields.io/github/release/allejo/CaptureBonus.svg)](https://github.com/allejo/CaptureBonus/releases/latest)
-![Minimum BZFlag Version](https://img.shields.io/badge/BZFlag-v2.4.0+-blue.svg)
+![Minimum BZFlag Version](https://img.shields.io/badge/BZFlag-v2.4.14+-blue.svg)
 [![License](https://img.shields.io/github/license/allejo/CaptureBonus.svg)](LICENSE.md)
 
 A BZFlag plugin that awards a static bonus to players who capture the flag.
