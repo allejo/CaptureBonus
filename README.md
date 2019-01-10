@@ -1,3 +1,7 @@
+Development for this project has officially ended. This plug-in has been superseded by [ctfOverseer](https://github.com/allejo/ctfOverseer).
+
+---
+
 # Capture Bonus
 
 [![GitHub release](https://img.shields.io/github/release/allejo/CaptureBonus.svg)](https://github.com/allejo/CaptureBonus/releases/latest)
